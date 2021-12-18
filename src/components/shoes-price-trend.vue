@@ -1,13 +1,14 @@
 <template>
     <div class="hello">
         <!-- 折线图 -->
-        <v-chart :options="myline" style="width:100%" />
+        <v-chart :options="myline" style="width:100%" ref='mychart'/>
     </div>
 </template>
 
 <script>
-import ECharts from 'vue-echarts';
-import {getALlTrend,getTrendByArticle} from '@/requests/api'
+// import ECharts from 'vue-echarts';
+import {getTrendByArticle} from '@/requests/api'
+import { ElMessage } from 'element-plus'
 // echarts-gl包含大部分图表所需要的依赖模块
 // import 'echarts-gl';
 
@@ -75,77 +76,45 @@ export default {
         // 'v-chart': ECharts
     },
     mounted (){
+        
         this.getData();
     },
     methods:{
         getData: function(){
             getTrendByArticle({
-                "articleNumber":"",
+                "articleNumber":"GV9872",
                 "startTime":"",
                 "endTime":""
             }).then(res=>{
-                console.log(res.data)
+                console.log(res);
+                let data = res.data;
+                 this.show_option(data);
+            }).catch(res=>{
+                console.log('catch:',res);
+                ElMessage.error(res.message)
             });
-            // 从后台去获取 TODO
-            this.myline.series = [ {
-                        name: "35",
-                        type: "line",
-                        stack: "价格",
-                        label:{
-                            show:true,
-                            formatter:'￥{c}'
-                        },
-                        smooth:true,
-                        data: [120, 132, 101, 134, 90, 230, 210]
+        },
+        show_option(data){
+            console.log(data,111)
+            console.log(this.$refs.mychart.options)
+            let seriesData = data['seriesData'];
+            for (let s in seriesData){
+                this.myline.series.push({
+                    name: s['size'],
+                    type:"line",
+                    stack:"价格",
+                    label:{
+                        show:true,
+                        formatter:'￥{c}'
                     },
-                    {
-                        name: "36",
-                        type: "line",
-                        stack: "价格",
-                        label:{
-                            show:true,
-                            formatter:'￥{c}'
-                        },
-                        smooth:true,
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: "37",
-                        type: "line",
-                        stack: "价格",
-                        label:{
-                            show:true,
-                            formatter:'￥{c}'
-                        },
-                        smooth:true,
-                        data: [150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: "38",
-                        type: "line",
-                        stack: "价格",
-                        label:{
-                            show:true,
-                            formatter:'￥{c}'
-                        },
-                        smooth:true,
-                        data: [320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name: "39",
-                        type: "line",
-                        stack: "价格",
-                        label:{
-                            show:true,
-                            formatter:'￥{c}'
-                        },
-                        smooth:true,
-                        data: [820, 932, 901, 934, 1290, 1330, 1320]
-                    }];
-            this.myline.legend.data = ["35","36","37","38","39"];
-            this.myline.title.text = "FW4255";
-            this.myline.title.subtext = "超级好看的鞋子";
-            this.myline.xAxis.data = ["2021-12-10","2021-12-11","2021-12-12","2021-12-13","2021-12-14","2021-12-15","2021-12-16"];
+                    smooth:true,
+                    data: s['price']
+                })
+            }
+            this.myline.legend.data = data['legend'];
+            this.myline.title.text = data['titleText'];
+            this.myline.title.subtext = data['titleSubText'];
+            this.myline.xAxis.data = data['date'];
 
         }
     }

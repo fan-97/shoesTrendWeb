@@ -7,7 +7,7 @@ import { ElMessage } from 'element-plus'
 
 
 // baseUrl
-axios.defaults.baseURL = 'http://localhost:8888/api'
+axios.defaults.baseURL = 'api'
 
 // 请求超时时间
 axios.defaults.timeout = 10000;
@@ -19,7 +19,9 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // 响应拦截器
 axios.interceptors.response.use(
     response => {
-        if (response.status === 200) {
+        console.log('=====data=====',response.data)
+        console.log('=====code=====',response.data.code)
+        if (response.status === 200 && response.data.code == '000000') {
             return Promise.resolve(response);
         } else {
             return Promise.reject(response);
