@@ -17,13 +17,11 @@
 
 <script>
 // vue-echarts
-import VueEchartsDemo from './components/vue-echarts-demo'
 import ShoesPriceTrend from './components/shoes-price-trend'
 
 export default {
   name: 'App',
   components: {
-    VueEchartsDemo,
     ShoesPriceTrend
   }
 }

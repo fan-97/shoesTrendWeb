@@ -7,6 +7,7 @@
 
 <script>
 import ECharts from 'vue-echarts';
+import {getALlTrend,getTrendByArticle} from '@/requests/api'
 // echarts-gl包含大部分图表所需要的依赖模块
 // import 'echarts-gl';
 
@@ -78,6 +79,13 @@ export default {
     },
     methods:{
         getData: function(){
+            getTrendByArticle({
+                "articleNumber":"",
+                "startTime":"",
+                "endTime":""
+            }).then(res=>{
+                console.log(res.data)
+            });
             // 从后台去获取 TODO
             this.myline.series = [ {
                         name: "35",
